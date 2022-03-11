@@ -1,0 +1,5 @@
+<library path="lib/libgravity_comp_joint_traj_controller">
+    <class name="gravity_comp_joint_traj_controller/JointTrajectoryController"
+           type="gravity_comp_joint_traj_controller::JointTrajectoryController"
+      base_class_type="controller_interface::ControllerBase" />
+</library>

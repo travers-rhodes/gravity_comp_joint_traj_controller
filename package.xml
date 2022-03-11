@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>gravity_comp_joint_traj_controller</name>
+  <version>0.0.0</version>
+  <description>A JointTrajectoryController implementation that uses PID control on top of gravity compensation.</description>
+
+  <maintainer email="tsr42@cornell.edu">Travers Rhodes</maintainer>
+  <license>MIT</license>
+  <depend>roscpp</depend>
+  <depend>kinova_gen3_control</depend>
+  <depend>joint_trajectory_controller</depend>
+  <depend>controller_interface</depend>
+  <buildtool_depend>catkin</buildtool_depend>
+  <export>
+    <controller_interface plugin="${prefix}/controller_plugins.xml" />
+  </export>
+</package>
