@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-  <include file="$(find kortex_gazebo)/launch/spawn_kortex_robot.launch">
+  <include file="$(find gravity_comp_joint_traj_controller)/launch/spawn_kortex_robot.launch">
     <arg name="arm" value="gen3"/>
     <arg name="gripper" value=""/>
     <arg name="debug" value="false"/>
