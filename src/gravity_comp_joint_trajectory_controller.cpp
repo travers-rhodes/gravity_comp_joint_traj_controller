@@ -78,6 +78,13 @@ namespace gravity_comp_joint_traj_controller
               root_nh.getNamespace().c_str());
           return false;
         }
+	double default_gravity_loop_rate = 500;
+        if (!root_nh.getParam("gravity_loop_rate", gravity_loop_rate_))
+        {
+          ROS_WARN("No gravity_loop_rate given in namespace: %s, using %0.1fHz)",
+              root_nh.getNamespace().c_str(), default_gravity_loop_rate);
+	  gravity_loop_rate_ = default_gravity_loop_rate;
+        }
 
         ROS_DEBUG("Initializing KDL chain");
         // Construct kdl_chain_ parameter first
@@ -115,7 +122,7 @@ namespace gravity_comp_joint_traj_controller
         int loop_count_mod_thousand = 0;
         ros::Time thousand_loops_start = ros::Time::now();
         ros::Time thousand_loops_end = ros::Time::now();
-        ros::Rate gravity_loop_rate(100);
+        ros::Rate gravity_loop_rate(gravity_loop_rate_);
         while (ros::ok()) {
           for (int i = 0; i < this->joints_.size(); i++)
           {
@@ -179,6 +186,7 @@ namespace gravity_comp_joint_traj_controller
       // Create an empty thread here, but we save it to the object
       // so that when the object is destroyed the thread is terminated
       std::thread update_gravity_loop_thread_;
+      double gravity_loop_rate_;
       boost::scoped_ptr<realtime_tools::RealtimePublisher<std_msgs::Float32>> realtime_pub_;
 
       // Referenced in initialization

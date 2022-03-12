@@ -6,6 +6,7 @@ joint_state_controller:
 # gravity controller also requires we load root/tip names
 root_name: base_link
 tip_name: tool_frame 
+gravity_loop_rate: 1000
 gen3_joint_trajectory_controller:
     type: gravity_comp_joint_traj_controller/JointTrajectoryController
     joints:
