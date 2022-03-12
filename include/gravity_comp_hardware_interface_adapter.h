@@ -58,19 +58,20 @@ public:
     return true;
   }
 
-  // TSR 2020-03-09: Function to take in recently-computed gravity compensation
-  // efforts (one per joint) and update them in the realtime loop
-  void update_gravity_comp(const std::vector<double> gravity_comp_efforts) {
+  // TSR 2020-03-09: Function to take in recently-computed gravity torques (ie: the compensation needed)
+  // efforts (one per joint) and save them 
+  // to the offset used in the realtime loop when sending efforts to joints
+  void update_gravity_comp(const double gravity_torque[]) {
     // Preconditions
     if (!joint_handles_ptr_)
       return;
     const unsigned int n_joints = joint_handles_ptr_->size();
-    assert(n_joints == gravity_comp_efforts.size());
     assert(n_joints == gravity_comp_efforts_.size());
 
     // copy the input gravity comp efforts to the ones actually used in the controller
     for (unsigned int i = 0; i < n_joints; ++i) {
-      gravity_comp_efforts_[i] = gravity_comp_efforts[i];
+      gravity_comp_efforts_[i] = gravity_torque[i];
+      ROS_DEBUG_THROTTLE(10,"Joint_%d has gravity %f", i+1, gravity_torque[i]);
     }
 
     // When we first receive a gravity comp, reset our PIDs and zero our commands
@@ -126,13 +127,14 @@ public:
     }
   }
 
+  bool has_received_real_gravity_comp_;
+
 private:
   typedef boost::shared_ptr<control_toolbox::Pid> PidPtr;
   std::vector<PidPtr> pids_;
 
   std::vector<double> velocity_ff_;
   std::vector<double> gravity_comp_efforts_;
-  bool has_received_real_gravity_comp_;
 
   std::vector<hardware_interface::JointHandle>* joint_handles_ptr_;
 };

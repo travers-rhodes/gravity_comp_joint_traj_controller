@@ -1,11 +1,5 @@
 <?xml version="1.0"?>
 <launch>
-  <include file="$(find kortex_gazebo)/launch/spawn_kortex_robot.launch">
-    <arg name="arm" value="gen3"/>
-    <arg name="gripper" value="robotiq_2f_85"/>
-    <arg name="debug" value="false"/>
-    <arg name="paused" value="false"/>
-  </include>
   <rosparam command="load" file="$(find gravity_comp_joint_traj_controller)/config/kinova_gen3_controllers.yaml"/>
   <param name="robot_description" command="$(find xacro)/xacro $(find kortex_description)/robots/gen3_robotiq_2f_85.xacro sim:=false"/>
   <node name="test_controller" pkg="gravity_comp_joint_traj_controller" type="gravity_comp_joint_traj_controller_node" respawn="false" output="screen"/>

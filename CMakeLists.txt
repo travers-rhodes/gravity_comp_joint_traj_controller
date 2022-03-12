@@ -11,7 +11,14 @@ find_package(catkin REQUIRED
   joint_trajectory_controller 
   controller_manager
   kinova_gen3_control
+  kdl_parser
   roscpp)
+
+## System dependencies are found with CMake's conventions
+find_package(Eigen3 REQUIRED)
+find_package(orocos_kdl REQUIRED)
+include_directories(${EIGEN3_INCLUDE_DIR})
+add_definitions(${EIGEN_DEFINITIONS})
 
 # I know this is silly, but we need this because we include a header file
 # that includes a header file that includes kinova stuff
@@ -47,7 +54,9 @@ include_directories(
 add_library(${PROJECT_NAME} src/gravity_comp_joint_trajectory_controller.cpp)
 add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(${PROJECT_NAME}
-   ${catkin_LIBRARIES}
+  ${catkin_LIBRARIES}
+  ${Eigen_LIBRARIES}
+  ${orocos_kdl_LIBRARIES}
 )
 
 ## Declare a C++ executable
@@ -61,7 +70,7 @@ add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catk
 
 # Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}_node
-   ${catkin_LIBRARIES}
+  ${catkin_LIBRARIES}
 )
 
 
