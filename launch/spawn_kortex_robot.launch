@@ -12,16 +12,10 @@
     <arg name="z0" default="0"/>
 
     <!-- Arm type -->
-    <arg name="arm" default="gen3"/>
-    <arg name="dof" default="7" if="$(eval arg('arm') == 'gen3')"/> <!-- Number of degrees of freedom of the arm -->
-    <arg name="dof" default="6" if="$(eval arg('arm') == 'gen3_lite')"/> <!-- Number of degrees of freedom of the arm -->
+    <arg name="dof" default="7"/>
     <arg name="vision" default="true"/> <!-- True if the arm has a Vision module -->
     
-    <!-- Default gripper for Gen3 is none, default gripper for Gen3 lite is gen3_lite_2f -->
-    <arg name="gripper" default="" if="$(eval arg('arm') == 'gen3')"/>
-    <arg name="gripper" default="gen3_lite_2f" if="$(eval arg('arm') == 'gen3_lite')"/>
-    
-    <arg name="robot_name" default="my_$(arg arm)"/>
+    <arg name="robot_name" default="my_gen3"/>
     <arg name="prefix" default=""/>
     <arg name="cyclic_data_publish_rate" default="40"/> <!--Hz-->
 
@@ -44,28 +38,13 @@
     <group ns="$(arg robot_name)">
 
         <!-- Load the description for the robot -->
-        <!-- Without gripper -->
-        <param name="robot_description" command="$(find xacro)/xacro --inorder $(find kortex_description)/robots/$(arg arm).xacro dof:=$(arg dof) vision:=$(arg vision) sim:=true prefix:=$(arg prefix)"
-            if="$(eval not arg('gripper'))"/>
         <!-- With gripper -->
-        <param name="robot_description" command="$(find xacro)/xacro --inorder $(find kortex_description)/robots/$(arg arm)_$(arg gripper).xacro dof:=$(arg dof) vision:=$(arg vision) sim:=true prefix:=$(arg prefix)"
-            unless="$(eval not arg('gripper'))"/>
+      <param name="robot_description" command="$(find xacro)/xacro --inorder $(find gravity_comp_joint_traj_controller)/config/gen3_robotiq_corrected_endweight.xacro sim:=true"
+        />
 
         <!-- Spawn the robot in Gazebo -->
         <!-- <rosparam command="load" file="$(find kortex_description)/arms/$(arg arm)/$(arg dof)dof/config/gazebo_initial_joint_positions.yaml"/> -->
         <!-- <param name="initial_positions" value=""/> TODO -->
-        <!-- Without gripper -->
-        <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-            args="-urdf -param robot_description -model $(arg robot_name) -x $(arg x0) -y $(arg y0) -z $(arg z0)
-                -robot_namespace $(arg robot_name)
-                -J $(arg prefix)joint_1 1.57
-                -J $(arg prefix)joint_2 0.35
-                -J $(arg prefix)joint_3 3.14
-                -J $(arg prefix)joint_4 -2.00
-                -J $(arg prefix)joint_5 0
-                -J $(arg prefix)joint_6 -1.00
-                -J $(arg prefix)joint_7 1.57"  
-            if="$(eval not arg('gripper'))"/> <!--TODO-->
         <!-- With gripper -->
         <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
         args="-urdf -param robot_description -model $(arg robot_name) -x $(arg x0) -y $(arg y0) -z $(arg z0)
@@ -76,8 +55,7 @@
                 -J $(arg prefix)joint_4 -2.00
                 -J $(arg prefix)joint_5 0
                 -J $(arg prefix)joint_6 -1.00
-                -J $(arg prefix)joint_7 1.57"
-        unless="$(eval not arg('gripper'))"/> <!--TODO-->
+                -J $(arg prefix)joint_7 1.57"/>
           
         <!-- Start robot state publisher -->
         <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"

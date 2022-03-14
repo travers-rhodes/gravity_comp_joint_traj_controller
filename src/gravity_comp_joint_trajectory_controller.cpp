@@ -78,7 +78,7 @@ namespace gravity_comp_joint_traj_controller
               root_nh.getNamespace().c_str());
           return false;
         }
-	double default_gravity_loop_rate = 500;
+        double default_gravity_loop_rate = 500;
         if (!root_nh.getParam("gravity_loop_rate", gravity_loop_rate_))
         {
           ROS_WARN("No gravity_loop_rate given in namespace: %s, using %0.1fHz)",
@@ -110,6 +110,7 @@ namespace gravity_comp_joint_traj_controller
         // start a thread to constantly update the gravity compensation values
         // and detach from it so it keeps on running in the background
         update_gravity_loop_thread_ = std::thread(&JointTrajectoryController::calculate_and_update_gravity_compensation, this);
+        update_gravity_loop_thread_.detach();
         return success;
       }
     private:

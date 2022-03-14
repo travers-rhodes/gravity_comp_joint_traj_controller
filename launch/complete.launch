@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="use_local_control_computer" default="true"/>
+  <arg name="fake_connection" default="true"/>
+  <arg name="control_loop_hz" default="100"/>
+  <arg name="load_robot_description" default="true"/>
+
+  
+  <group if="$(arg use_local_control_computer)">
+    <machine name="control-computer" address="localhost"/>
+  </group>
+  <group unless="$(arg use_local_control_computer)">
+    <!-- see http://wiki.ros.org/roslaunch/XML/machine for how to set up this launchfile to run on a different machine -->
+    <machine name="control-computer" address="untitled-control" env-loader="/home/realtimeuser/gravity_comp_ws/src/gravity_comp_joint_traj_controller/env.sh"/>
+  </group>
+
+  <!-- give the option not to load the robot description here (in case the caller has a more detailed robot description
+       they don't want overwritten -->
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find gravity_comp_joint_traj_controller)/config/gen3_robotiq_corrected_endweight.xacro"
+        />
+
+  <!-- load joint limits from param file (overwriting associated limits in URDF)-->
+  <rosparam command="load" file="$(find kinova_gen3_control)/config/joint_limits.yaml"/>
+
+  <rosparam command="load" file="$(find gravity_comp_joint_traj_controller)/config/kinova_gen3_controllers.yaml"/>
+
+  <!-- just spawn (and never unload) these controllers https://github.com/ros-controls/ros_control/issues/304 -->
+  <arg name="controllers_to_spawn" default="
+                          gen3_joint_trajectory_controller
+                          joint_state_controller 
+    " />
+  <!-- load and start the position and state controllers --> 
+  <node name="kinova_gen3_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false"
+    output="screen" args="spawn
+                          gen3_joint_trajectory_controller
+    joint_state_controller" />
+  
+  <node machine="control-computer" name="kinova_gen3_hardware_interface_node" pkg="kinova_gen3_control" type="kinova_gen3_control_node" respawn="false"
+    output="screen">
+    <param name="fake_connection" value="$(arg fake_connection)"/>
+    <param name="control_loop_hz" value="$(arg control_loop_hz)"/>
+    </node>
+</launch>
