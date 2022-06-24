@@ -105,8 +105,9 @@ namespace gravity_comp_joint_traj_controller
         jnt_gravity_.resize(kdl_chain_.getNrOfJoints());
         q_.resize(kdl_chain_.getNrOfJoints());
         ROS_DEBUG("Hardware Adapter Interface Initialization Complete");
-      
-        realtime_pub_.reset(new realtime_tools::RealtimePublisher<std_msgs::Float32>(controller_nh, "gravity_loop_rate", 4));
+     
+        // 2022-06-24: TSR update queue-size to 1 since we just want to use the latest 
+        realtime_pub_.reset(new realtime_tools::RealtimePublisher<std_msgs::Float32>(controller_nh, "gravity_loop_rate", 1));
 
         // start a thread to constantly update the gravity compensation values
         // and detach from it so it keeps on running in the background
