@@ -16,7 +16,7 @@
 
   <!-- give the option not to load the robot description here (in case the caller has a more detailed robot description
        they don't want overwritten -->
-  <param if="$(load_robot_description)" name="robot_description" command="$(find xacro)/xacro --inorder $(find gravity_comp_joint_traj_controller)/config/gen3_robotiq_corrected_endweight.xacro"
+  <param if="$(arg load_robot_description)" name="robot_description" command="$(find xacro)/xacro --inorder $(find gravity_comp_joint_traj_controller)/config/gen3_robotiq_corrected_endweight.xacro"
         />
 
   <!-- load joint limits from param file (overwriting associated limits in URDF)-->
