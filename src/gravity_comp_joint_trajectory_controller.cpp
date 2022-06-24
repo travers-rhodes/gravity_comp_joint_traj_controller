@@ -43,11 +43,12 @@ namespace gravity_comp_joint_traj_controller
       bool init(hardware_interface::EffortJointInterface* hw,
                 ros::NodeHandle&   root_nh,
                 ros::NodeHandle&   controller_nh) {
+        // TSR 2022-06-24 Lol. Wondering why I had so much network traffic. Don't automatically set to Debug for logger.
         // https://www.theconstructsim.com/ros-qa-141-how-to-modify-logger-level-in-ros-c/
-        if (ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug))
-        {
-          ros::console::notifyLoggerLevelsChanged();
-        }
+        //if (ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug))
+        //{
+        //  ros::console::notifyLoggerLevelsChanged();
+        //}
         // call the base class's init method
         ROS_DEBUG("Calling init method");
         bool success = joint_trajectory_controller::JointTrajectoryController<trajectory_interface::QuinticSplineSegment<double>,
