@@ -26,7 +26,7 @@ gen3_joint_trajectory_controller:
     gains:
         joint_1: {p: 3000.0, i: 0.0, d: 0.1, i_clamp_min: 0.0, i_clamp_max: 0.0, antiwindup: true}
         joint_2: {p: 3000.0, i: 0.0, d: 0.1, i_clamp_min: 0.0, i_clamp_max: 0.0, antiwindup: true}
-        joint_3: {p: 500.0, i: 0.0, d: 0.1, i_clamp_min: 0.0, i_clamp_max: 0.0, antiwindup: true}
+        joint_3: {p: 3000.0, i: 0.0, d: 0.1, i_clamp_min: 0.0, i_clamp_max: 0.0, antiwindup: true}
         joint_4: {p: 800.0, i: 0.0, d: 0.1, i_clamp_min: 0.0, i_clamp_max: 0.0, antiwindup: true}
         joint_5: {p: 400.0, i: 0.0, d: 0.1, i_clamp_min: 0.0, i_clamp_max: 0.0, antiwindup: true}
         joint_6: {p: 400.0, i: 0.0, d: 0.1, i_clamp_min: 0.0, i_clamp_max: 0.0, antiwindup: true}
