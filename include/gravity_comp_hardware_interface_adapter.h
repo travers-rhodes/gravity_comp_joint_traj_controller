@@ -1,5 +1,6 @@
 // Copied and modified from https://github.com/ros-controls/ros_controllers/blob/kinetic-devel/joint_trajectory_controller/include/joint_trajectory_controller/hardware_interface_adapter.h
 #include <joint_trajectory_controller/hardware_interface_adapter.h>
+#include "std_msgs/Float32MultiArray.h"
 
 // Because this template is more specific 
 // than the templates defined in joint_trajectory_controller,
@@ -19,6 +20,10 @@ public:
 
   bool init(std::vector<hardware_interface::JointHandle>& joint_handles, ros::NodeHandle& controller_nh)
   {
+    loop_count_ = 0;
+    // add a debug command to publish the latest effort commands
+    realtime_pub_.reset(new realtime_tools::RealtimePublisher<std_msgs::Float32MultiArray>(controller_nh, "gravity_pid_requested_effort", 1));
+
     // Store pointer to joint handles
     joint_handles_ptr_ = &joint_handles;
 
@@ -113,6 +118,10 @@ public:
     const unsigned int n_joints = joint_handles_ptr_->size();
     assert(n_joints == state_error.position.size());
     assert(n_joints == state_error.velocity.size());
+    
+
+    loop_count_++;
+    std::vector<float> debug_efforts_array_;
 
     // Update PIDs
     for (unsigned int i = 0; i < n_joints; ++i)
@@ -124,6 +133,20 @@ public:
         ? gravity_comp_efforts_[i] + (desired_state.velocity[i] * velocity_ff_[i]) + pids_[i]->computeCommand(state_error.position[i], state_error.velocity[i], period)
         : 0;
       (*joint_handles_ptr_)[i].setCommand(command);
+
+      // to debug, publish at like 100hz
+      if (loop_count_ == 10) {
+        debug_efforts_array_.push_back(command);
+      }
+    }
+
+    // reset the loop counter
+    if (loop_count_ == 10) {
+      if (realtime_pub_->trylock()){
+        realtime_pub_->msg_.data = debug_efforts_array_;
+        realtime_pub_->unlockAndPublish();
+      }
+      loop_count_ = 0;
     }
   }
 
@@ -136,5 +159,9 @@ private:
   std::vector<double> velocity_ff_;
   std::vector<double> gravity_comp_efforts_;
 
+  int loop_count_;
+
+
   std::vector<hardware_interface::JointHandle>* joint_handles_ptr_;
+  boost::scoped_ptr<realtime_tools::RealtimePublisher<std_msgs::Float32MultiArray>> realtime_pub_;
 };
