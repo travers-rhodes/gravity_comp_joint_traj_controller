@@ -4,6 +4,7 @@
   <arg name="fake_connection" default="true"/>
   <arg name="control_loop_hz" default="100"/>
   <arg name="load_robot_description" default="true"/>
+  <arg name="use_gazebo" default="false"/>
 
   
   <group if="$(arg use_local_control_computer)">
@@ -38,6 +39,7 @@
   <node machine="control-computer" name="kinova_gen3_hardware_interface_node" pkg="kinova_gen3_control" type="kinova_gen3_control_node" respawn="false"
     output="screen">
     <param name="fake_connection" value="$(arg fake_connection)"/>
+    <param name="use_gazebo" value="$(arg use_gazebo)"/>
     <param name="control_loop_hz" value="$(arg control_loop_hz)"/>
     </node>
 </launch>
