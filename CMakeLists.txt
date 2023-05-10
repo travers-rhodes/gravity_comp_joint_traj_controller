@@ -1,4 +1,11 @@
 cmake_minimum_required(VERSION 2.8.3)
+
+# We don't use the VERSION variables for our package...
+# https://github.com/google/googletest/pull/2264/commits/97d8c47df92b7514dc33d361c21a4d8965f10954
+if (POLICY CMP0048)
+  cmake_policy(SET CMP0048 NEW)
+endif (POLICY CMP0048)
+
 project(gravity_comp_joint_traj_controller)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
@@ -12,7 +19,9 @@ find_package(catkin REQUIRED
   controller_manager
   kinova_gen3_control
   kdl_parser
-  roscpp)
+  roscpp
+  message_runtime
+  )
 
 ## System dependencies are found with CMake's conventions
 find_package(Eigen3 REQUIRED)
@@ -24,6 +33,13 @@ add_definitions(${EIGEN_DEFINITIONS})
 # that includes a header file that includes kinova stuff
 add_definitions(-D_OS_UNIX)
 
+add_message_files(
+  FILES
+  GravityAdjustedEfforts.msg
+)
+generate_messages(
+  DEPENDENCIES
+)
 
 ###################################
 ## catkin specific configuration ##

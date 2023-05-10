@@ -1,6 +1,6 @@
 // Copied and modified from https://github.com/ros-controls/ros_controllers/blob/kinetic-devel/joint_trajectory_controller/include/joint_trajectory_controller/hardware_interface_adapter.h
 #include <joint_trajectory_controller/hardware_interface_adapter.h>
-#include "std_msgs/Float32MultiArray.h"
+#include "gravity_comp_joint_traj_controller/GravityAdjustedEfforts.h"
 
 // Because this template is more specific 
 // than the templates defined in joint_trajectory_controller,
@@ -22,7 +22,7 @@ public:
   {
     loop_count_ = 0;
     // add a debug command to publish the latest effort commands
-    realtime_pub_.reset(new realtime_tools::RealtimePublisher<std_msgs::Float32MultiArray>(controller_nh, "gravity_pid_requested_effort", 1));
+    realtime_pub_.reset(new realtime_tools::RealtimePublisher<gravity_comp_joint_traj_controller::GravityAdjustedEfforts>(controller_nh, "gravity_pid_requested_effort", 1));
 
     // Store pointer to joint handles
     joint_handles_ptr_ = &joint_handles;
@@ -143,7 +143,11 @@ public:
     // reset the loop counter
     if (loop_count_ == 10) {
       if (realtime_pub_->trylock()){
-        realtime_pub_->msg_.data = debug_efforts_array_;
+        realtime_pub_->msg_.stamp = ros::Time::now();
+        // convert double vector to float vector
+        std::vector<float> gravity_as_float(gravity_comp_efforts_.begin(), gravity_comp_efforts_.end());
+        realtime_pub_->msg_.gravity_component = gravity_as_float;
+        realtime_pub_->msg_.resulting_effort = debug_efforts_array_;
         realtime_pub_->unlockAndPublish();
       }
       loop_count_ = 0;
@@ -163,5 +167,5 @@ private:
 
 
   std::vector<hardware_interface::JointHandle>* joint_handles_ptr_;
-  boost::scoped_ptr<realtime_tools::RealtimePublisher<std_msgs::Float32MultiArray>> realtime_pub_;
+  boost::scoped_ptr<realtime_tools::RealtimePublisher<gravity_comp_joint_traj_controller::GravityAdjustedEfforts>> realtime_pub_;
 };
