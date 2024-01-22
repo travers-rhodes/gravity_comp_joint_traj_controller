@@ -4,7 +4,7 @@
   <version>0.0.0</version>
   <description>A JointTrajectoryController implementation that uses PID control on top of gravity compensation.</description>
 
-  <maintainer email="tsr42@cornell.edu">Travers Rhodes</maintainer>
+  <maintainer email="anon">anonymous</maintainer>
   <license>MIT</license>
   <depend>roscpp</depend>
   <depend>kinova_gen3_control</depend>

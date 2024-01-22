@@ -43,7 +43,7 @@ namespace gravity_comp_joint_traj_controller
       bool init(hardware_interface::EffortJointInterface* hw,
                 ros::NodeHandle&   root_nh,
                 ros::NodeHandle&   controller_nh) {
-        // TSR 2022-06-24 Lol. Wondering why I had so much network traffic. Don't automatically set to Debug for logger.
+        // 2022-06-24 Lol. Wondering why I had so much network traffic. Don't automatically set to Debug for logger.
         // https://www.theconstructsim.com/ros-qa-141-how-to-modify-logger-level-in-ros-c/
         //if (ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug))
         //{
@@ -106,7 +106,7 @@ namespace gravity_comp_joint_traj_controller
         q_.resize(kdl_chain_.getNrOfJoints());
         ROS_DEBUG("Hardware Adapter Interface Initialization Complete");
      
-        // 2022-06-24: TSR update queue-size to 1 since we just want to use the latest 
+        // 2022-06-24: update queue-size to 1 since we just want to use the latest 
         realtime_pub_.reset(new realtime_tools::RealtimePublisher<std_msgs::Float32>(controller_nh, "gravity_loop_rate", 1));
 
         // start a thread to constantly update the gravity compensation values

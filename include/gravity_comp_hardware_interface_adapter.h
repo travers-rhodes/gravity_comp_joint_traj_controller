@@ -50,7 +50,7 @@ public:
       controller_nh.param(std::string("velocity_ff/") + joint_handles[i].getName(), velocity_ff_[i], 0.0);
     }
    
-    // TSR 2022-03-09: Initialize the gravity compensation efforts to zero
+    // 2022-03-09: Initialize the gravity compensation efforts to zero
     // remember to reset the PID as soon as we receive our first real gravity comp
     // vector (when has_received_real_gravity_comp_ changes to true)
     has_received_real_gravity_comp_ = false;
@@ -63,7 +63,7 @@ public:
     return true;
   }
 
-  // TSR 2020-03-09: Function to take in recently-computed gravity torques (ie: the compensation needed)
+  // 2020-03-09: Function to take in recently-computed gravity torques (ie: the compensation needed)
   // efforts (one per joint) and save them 
   // to the offset used in the realtime loop when sending efforts to joints
   void update_gravity_comp(const double gravity_torque[]) {
@@ -126,7 +126,7 @@ public:
     // Update PIDs
     for (unsigned int i = 0; i < n_joints; ++i)
     {
-      // TSR 2022-03-09: Add gravity compensation effort to the command
+      // 2022-03-09: Add gravity compensation effort to the command
       // Until we have a real gravity compensation value
       // just send zero commands 
       const double command = has_received_real_gravity_comp_ 

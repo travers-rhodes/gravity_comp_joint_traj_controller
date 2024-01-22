@@ -4,7 +4,7 @@ This package is in beta and has only so far been developed for Kinova Gen3 7DOF 
 
 # Setup
 
-This package relies on `https://github.com/travers-rhodes/kinova_gen3_control`. Follow installation instructions there.
+This package relies on `kinova_gen3_control`. Follow installation instructions there.
 
 Compile using something like
 ```
